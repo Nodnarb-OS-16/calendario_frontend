@@ -219,7 +219,57 @@
                 <p class="text-secondary">Cargando estudiantes...</p>
               </div>
             </div>
+            <div class="card-panel">
+              <h4><i class="fas fa-link"></i> Gestión de Asignaciones Docente</h4>
+              <p class="text-secondary">Asigna docentes a cursos y asignaturas específicas</p>
+            </div>
+
+            <!-- Formulario para Crear Asignación -->
+            <div id="formAsignacion" class="card-panel">
+              <h5><i class="fas fa-plus"></i> Crear Asignación</h5>
+              
+              <label>Docente:</label>
+              <select id="asignacionDocente">
+                <option value="" disabled selected>Seleccione docente</option>
+              </select>
+              
+              <label>Curso:</label>
+              <select id="asignacionCurso">
+                <option value="" disabled selected>Seleccione curso</option>
+              </select>
+              
+              <label>Asignatura:</label>
+              <select id="asignacionAsignatura">
+                <option value="" disabled selected>Seleccione asignatura</option>
+              </select>
+              
+              <label>Año Escolar:</label>
+              <input type="number" id="asignacionAnio" value="2025" min="2024" max="2030">
+              
+              <button onclick="guardarAsignacion()" class="btn-primary">
+                <i class="fas fa-save"></i> Crear Asignación
+              </button>
+            </div>
+
+            <!-- Lista de Asignaciones -->
+            <div class="card-panel">
+              <h5><i class="fas fa-list"></i> Asignaciones Actuales</h5>
+              
+              <!-- Filtro por docente -->
+              <div style="margin-bottom: 15px;">
+                <label>Filtrar por docente:</label>
+                <select id="filtroDocenteAsignacion" onchange="filtrarAsignaciones()">
+                  <option value="">Todos los docentes</option>
+                </select>
+              </div>
+              
+              <div id="listaAsignaciones" class="lista-usuarios">
+                <p class="text-secondary">Cargando asignaciones...</p>
+              </div>
+            </div>
           </div>
+          
+
 
         </div>
       </div>

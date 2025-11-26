@@ -874,16 +874,406 @@ function limpiarFormularioDocente() {
 }
 
 // ===========================================
-// CRUD ESTUDIANTES (temporal)
+// CRUD ESTUDIANTES - Agregar al script.js
 // ===========================================
 
 let estudiantesCache = [];
 
 async function cargarListaEstudiantes() {
-  // Por ahora solo inicializamos vacío
-  estudiantesCache = [];
+  try {
+    estudiantesCache = await apiCall(`/director/estudiantes`, 'GET', null, {
+      directorId: usuarioActual.id
+    });
+    
+    mostrarListaEstudiantes();
+    
+    // Cargar cursos en el select
+    const selectCurso = document.getElementById('estudianteCurso');
+    if (selectCurso && cursosDisponibles.length > 0) {
+      selectCurso.innerHTML = '<option value="" disabled selected>Seleccione curso</option>';
+      cursosDisponibles.forEach(curso => {
+        const option = document.createElement('option');
+        option.value = curso.id;
+        option.textContent = curso.nombre;
+        selectCurso.appendChild(option);
+      });
+    }
+  } catch (error) {
+    console.error('Error al cargar estudiantes:', error);
+    document.getElementById('listaEstudiantes').innerHTML = 
+      '<p class="no-data">Error al cargar estudiantes</p>';
+  }
+}
+
+function mostrarListaEstudiantes() {
   const container = document.getElementById('listaEstudiantes');
-  if (container) {
+  
+  if (estudiantesCache.length === 0) {
     container.innerHTML = '<p class="no-data">No hay estudiantes registrados</p>';
+    return;
+  }
+  
+  container.innerHTML = estudiantesCache.map(estudiante => {
+    // Aquí podrías agregar información del curso si la tienes en el objeto
+    return `
+      <div class="usuario-card">
+        <div class="usuario-card-header">
+          <span class="usuario-nombre">
+            <i class="fas fa-user-graduate"></i> 
+            ${estudiante.nombre} ${estudiante.apellidoPaterno} ${estudiante.apellidoMaterno}
+          </span>
+        </div>
+        <div class="usuario-info">
+          <i class="fas fa-envelope"></i> ${estudiante.correoElectronico}
+        </div>
+        <div class="usuario-info">
+          <i class="fas fa-id-badge"></i> ID: ${estudiante.id}
+        </div>
+        <div class="usuario-actions">
+          <button class="btn-edit" onclick="editarEstudiante(${estudiante.id})">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+          <button class="btn-delete" onclick="eliminarEstudiante(${estudiante.id})">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function guardarEstudiante() {
+  const id = document.getElementById('estudianteIdEdit').value;
+  const nombre = document.getElementById('estudianteNombre').value;
+  const apellidoP = document.getElementById('estudianteApellidoP').value;
+  const apellidoM = document.getElementById('estudianteApellidoM').value;
+  const correo = document.getElementById('estudianteCorreo').value;
+  const password = document.getElementById('estudiantePassword').value;
+  const cursoId = document.getElementById('estudianteCurso').value;
+  const anioEscolar = document.getElementById('estudianteAnio').value;
+  
+  if (!nombre || !apellidoP || !correo || !cursoId) {
+    mostrarError('Por favor, completa los campos obligatorios (Nombre, Apellido Paterno, Correo y Curso)');
+    return;
+  }
+  
+  if (!id && !password) {
+    mostrarError('La contraseña es obligatoria para nuevos estudiantes');
+    return;
+  }
+  
+  try {
+    const body = {
+      nombre,
+      apellidoPaterno: apellidoP,
+      apellidoMaterno: apellidoM,
+      correoElectronico: correo,
+      cursoId: parseInt(cursoId),
+      anioEscolar: parseInt(anioEscolar)
+    };
+    
+    // Solo enviar contraseña si se ingresó
+    if (password) {
+      body.contrasena = password;
+    }
+    
+    if (id) {
+      // Actualizar
+      body.id = parseInt(id);
+      await apiCall(`/director/estudiantes/${id}`, 'PUT', body, {
+        directorId: usuarioActual.id
+      });
+      alert('Estudiante actualizado exitosamente');
+    } else {
+      // Crear
+      await apiCall('/director/estudiantes', 'POST', body, {
+        directorId: usuarioActual.id
+      });
+      alert('Estudiante creado exitosamente');
+    }
+    
+    limpiarFormularioEstudiante();
+    await cargarListaEstudiantes();
+  } catch (error) {
+    mostrarError(error.message);
+  }
+}
+
+function editarEstudiante(id) {
+  const estudiante = estudiantesCache.find(e => e.id === id);
+  if (!estudiante) return;
+  
+  document.getElementById('estudianteIdEdit').value = estudiante.id;
+  document.getElementById('estudianteNombre').value = estudiante.nombre;
+  document.getElementById('estudianteApellidoP').value = estudiante.apellidoPaterno;
+  document.getElementById('estudianteApellidoM').value = estudiante.apellidoMaterno;
+  document.getElementById('estudianteCorreo').value = estudiante.correoElectronico;
+  document.getElementById('estudiantePassword').value = '';
+  document.getElementById('estudiantePassword').placeholder = 'Dejar vacío para mantener la actual';
+  
+  // Aquí necesitarías obtener el curso del estudiante desde el backend
+  // Por ahora lo dejamos vacío
+  
+  document.getElementById('tituloFormEstudiante').innerHTML = 
+    '<i class="fas fa-edit"></i> Editar Estudiante';
+  document.getElementById('btnTextEstudiante').textContent = 'Actualizar Estudiante';
+  document.getElementById('btnCancelarEstudiante').classList.remove('hidden');
+  
+  // Scroll al formulario
+  document.getElementById('crudEstudiantes').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function eliminarEstudiante(id) {
+  const estudiante = estudiantesCache.find(e => e.id === id);
+  if (!estudiante) return;
+  
+  if (!confirm(`¿Estás seguro de eliminar al estudiante ${estudiante.nombre} ${estudiante.apellidoPaterno}?\n\nEsto eliminará también todas sus tareas.`)) {
+    return;
+  }
+  
+  try {
+    await apiCall(`/director/estudiantes/${id}`, 'DELETE', null, {
+      directorId: usuarioActual.id
+    });
+    
+    alert('Estudiante eliminado exitosamente');
+    await cargarListaEstudiantes();
+  } catch (error) {
+    mostrarError(error.message);
+  }
+}
+
+function cancelarEdicionEstudiante() {
+  limpiarFormularioEstudiante();
+}
+
+function limpiarFormularioEstudiante() {
+  document.getElementById('estudianteIdEdit').value = '';
+  document.getElementById('estudianteNombre').value = '';
+  document.getElementById('estudianteApellidoP').value = '';
+  document.getElementById('estudianteApellidoM').value = '';
+  document.getElementById('estudianteCorreo').value = '';
+  document.getElementById('estudiantePassword').value = '';
+  document.getElementById('estudiantePassword').placeholder = 'Contraseña';
+  document.getElementById('estudianteCurso').value = '';
+  document.getElementById('estudianteAnio').value = new Date().getFullYear();
+  
+  document.getElementById('tituloFormEstudiante').innerHTML = 
+    '<i class="fas fa-plus"></i> Agregar Estudiante';
+  document.getElementById('btnTextEstudiante').textContent = 'Guardar Estudiante';
+  document.getElementById('btnCancelarEstudiante').classList.add('hidden');
+}
+
+// ===========================================
+// GESTIÓN DE ASIGNACIONES DOCENTE-CURSO-ASIGNATURA
+// ===========================================
+
+let asignacionesCache = [];
+let filtroDocenteActual = '';
+
+async function cargarAsignaciones() {
+  try {
+    // Cargar todas las asignaciones
+    asignacionesCache = await apiCall(`/director/asignaciones`, 'GET', null, {
+      directorId: usuarioActual.id
+    });
+    
+    // Poblar selectores
+    await poblarSelectoresAsignacion();
+    
+    // Mostrar lista
+    mostrarListaAsignaciones();
+  } catch (error) {
+    console.error('Error al cargar asignaciones:', error);
+    document.getElementById('listaAsignaciones').innerHTML = 
+      '<p class="no-data">Error al cargar asignaciones</p>';
+  }
+}
+
+async function poblarSelectoresAsignacion() {
+  // Poblar select de docentes
+  const selectDocente = document.getElementById('asignacionDocente');
+  const selectFiltroDocente = document.getElementById('filtroDocenteAsignacion');
+  
+  if (selectDocente && docentesCache.length > 0) {
+    selectDocente.innerHTML = '<option value="" disabled selected>Seleccione docente</option>';
+    selectFiltroDocente.innerHTML = '<option value="">Todos los docentes</option>';
+    
+    docentesCache.forEach(docente => {
+      const optionMain = document.createElement('option');
+      optionMain.value = docente.id;
+      optionMain.textContent = `${docente.nombre} ${docente.apellidoPaterno}`;
+      selectDocente.appendChild(optionMain);
+      
+      const optionFiltro = document.createElement('option');
+      optionFiltro.value = docente.id;
+      optionFiltro.textContent = `${docente.nombre} ${docente.apellidoPaterno}`;
+      selectFiltroDocente.appendChild(optionFiltro);
+    });
+  }
+  
+  // Poblar select de cursos
+  const selectCurso = document.getElementById('asignacionCurso');
+  if (selectCurso && cursosDisponibles.length > 0) {
+    selectCurso.innerHTML = '<option value="" disabled selected>Seleccione curso</option>';
+    cursosDisponibles.forEach(curso => {
+      const option = document.createElement('option');
+      option.value = curso.id;
+      option.textContent = curso.nombre;
+      selectCurso.appendChild(option);
+    });
+  }
+  
+  // Poblar select de asignaturas
+  const selectAsignatura = document.getElementById('asignacionAsignatura');
+  if (selectAsignatura && asignaturasDisponibles.length > 0) {
+    selectAsignatura.innerHTML = '<option value="" disabled selected>Seleccione asignatura</option>';
+    asignaturasDisponibles.forEach(asignatura => {
+      const option = document.createElement('option');
+      option.value = asignatura.id;
+      option.textContent = asignatura.nombre;
+      selectAsignatura.appendChild(option);
+    });
+  }
+}
+
+function mostrarListaAsignaciones() {
+  const container = document.getElementById('listaAsignaciones');
+  
+  // Filtrar asignaciones si hay filtro activo
+  let asignacionesFiltradas = asignacionesCache;
+  if (filtroDocenteActual) {
+    asignacionesFiltradas = asignacionesCache.filter(a => 
+      a.docente && a.docente.id == filtroDocenteActual
+    );
+  }
+  
+  if (asignacionesFiltradas.length === 0) {
+    container.innerHTML = '<p class="no-data">No hay asignaciones registradas</p>';
+    return;
+  }
+  
+  container.innerHTML = asignacionesFiltradas.map(asignacion => {
+    const docente = asignacion.docente || {};
+    const curso = asignacion.curso || {};
+    const asignatura = asignacion.asignatura || {};
+    const anio = asignacion.anioEscolar || 'N/A';
+    
+    return `
+      <div class="asignacion-card">
+        <div class="asignacion-card-header">
+          <span class="asignacion-title">
+            <i class="fas fa-user-tie"></i> 
+            ${docente.nombre || 'N/A'} ${docente.apellidoPaterno || ''}
+          </span>
+          <span class="badge-anio">${anio}</span>
+        </div>
+        <div class="asignacion-detalle">
+          <div class="detalle-item">
+            <i class="fas fa-school"></i> 
+            <strong>Curso:</strong> ${curso.nombre || 'N/A'}
+          </div>
+          <div class="detalle-item">
+            <i class="fas fa-book"></i> 
+            <strong>Asignatura:</strong> ${asignatura.nombre || 'N/A'}
+          </div>
+        </div>
+        <div class="asignacion-actions">
+          <button class="btn-delete" onclick="eliminarAsignacion(${asignacion.id})">
+            <i class="fas fa-times-circle"></i> Eliminar Asignación
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function guardarAsignacion() {
+  const docenteId = document.getElementById('asignacionDocente').value;
+  const cursoId = document.getElementById('asignacionCurso').value;
+  const asignaturaId = document.getElementById('asignacionAsignatura').value;
+  const anioEscolar = document.getElementById('asignacionAnio').value;
+  
+  if (!docenteId || !cursoId || !asignaturaId) {
+    mostrarError('Por favor, completa todos los campos');
+    return;
+  }
+  
+  // Validar que no exista ya esta asignación
+  const existeAsignacion = asignacionesCache.some(a => 
+    a.docente && a.docente.id == docenteId &&
+    a.curso && a.curso.id == cursoId &&
+    a.asignatura && a.asignatura.id == asignaturaId &&
+    a.anioEscolar == anioEscolar
+  );
+  
+  if (existeAsignacion) {
+    mostrarError('Esta asignación ya existe');
+    return;
+  }
+  
+  try {
+    await apiCall('/director/asignaciones', 'POST', {
+      docenteId: parseInt(docenteId),
+      cursoId: parseInt(cursoId),
+      asignaturaId: parseInt(asignaturaId),
+      anioEscolar: parseInt(anioEscolar)
+    }, { directorId: usuarioActual.id });
+    
+    alert('Asignación creada exitosamente');
+    
+    // Limpiar formulario
+    document.getElementById('asignacionDocente').value = '';
+    document.getElementById('asignacionCurso').value = '';
+    document.getElementById('asignacionAsignatura').value = '';
+    
+    // Recargar asignaciones
+    await cargarAsignaciones();
+  } catch (error) {
+    mostrarError(error.message);
+  }
+}
+
+async function eliminarAsignacion(asignacionId) {
+  if (!confirm('¿Estás seguro de eliminar esta asignación?\n\nEsto también eliminará todas las evaluaciones asociadas.')) {
+    return;
+  }
+  
+  try {
+    await apiCall(`/director/asignaciones/${asignacionId}`, 'DELETE', null, {
+      directorId: usuarioActual.id
+    });
+    
+    alert('Asignación eliminada exitosamente');
+    await cargarAsignaciones();
+  } catch (error) {
+    mostrarError(error.message);
+  }
+}
+
+function filtrarAsignaciones() {
+  filtroDocenteActual = document.getElementById('filtroDocenteAsignacion').value;
+  mostrarListaAsignaciones();
+}
+
+// Modificar la función cargarConfiguracion para incluir las asignaciones
+async function cargarConfiguracion() {
+  try {
+    const configs = await apiCall('/director/configuracion', 'GET', null, {
+      directorId: usuarioActual.id
+    });
+
+    const configLimite = configs.find(c => c.clave === 'max_evaluaciones_por_dia');
+    if (configLimite) {
+      document.getElementById('limitePruebas').value = configLimite.valor;
+    }
+    
+    // Cargar listas de CRUD
+    await cargarListaDocentes();
+    await cargarListaEstudiantes();
+    await cargarAsignaciones(); // Agregar esta línea
+    
+  } catch (error) {
+    console.error('Error al cargar configuración:', error);
   }
 }
