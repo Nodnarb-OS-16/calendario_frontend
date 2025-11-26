@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPlan - Evaluaciones</title>
+
+  <!-- Vinculo al archivo CSS -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- ICONOS para mejorar la UX y la estética -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <!-- ==================== SECCIÓN DE LOGIN ==================== -->
+  <div class="login-container" id="login">
+    <div class="login-formulario">
+      <h1>EduPlan</h1>
+      <h2><i class="fas fa-sign-in-alt"></i> Bienvenido a la Intranet!</h2>
+
+      <input type="email" id="correo" placeholder="Correo electrónico" autocomplete="email">
+      <input type="password" id="clave" placeholder="Contraseña" autocomplete="current-password">
+
+      <button onclick="iniciarSesion()"><i class="fas fa-arrow-right"></i> Iniciar Sesión</button>
+      <div id="mensajeError" class="mensaje-error hidden"></div>
+    </div>
+    <img src="img/EDUPLAN.jpeg" alt="Logo EduPlan" class="imagen-derecha">
+  </div>
+
+  <!-- ==================== APLICACIÓN PRINCIPAL (VISIBLE POST-LOGIN) ==================== -->
+  <div class="app-container hidden" id="appContainer">
+
+    <!-- -------------------- BARRA LATERAL (SIDEBAR) -------------------- -->
+    <aside class="sidebar" id="sidebar">
+        
+      <div class="logo-sidebar">
+        <img src="img/EDUPLAN.jpeg" alt="Logo EduPlan">
+      </div>
+      
+      <!-- Saludo Personalizado -->
+      <h3 id="tituloBienvenida" class="saludo-personalizado">Bienvenido(a) Usuario</h3>
+
+      <!-- BOTÓN CERRAR SESIÓN -->
+      <button id="logout" class="btn-sidebar-logout" onclick="cerrarSesion()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+      </button>
+
+      <div class="panel-seccion" id="panelesAcciones">
+
+        <!-- ==================== PANEL DEL ALUMNO (TAREA CRUD) ==================== -->
+        <div id="panelAlumno" class="hidden formulario sidebar-form">
+          <div class="card-panel">
+            <h4><i class="fas fa-plus-circle"></i> Agregar Tarea Personal</h4>
+            <input type="text" id="tareaAlumno" placeholder="Descripción de la tarea">
+            <label>Fecha y Hora:</label>
+            <input type="date" id="fechaAlumno">
+            <input type="time" id="horaAlumno" value="08:00">
+            <button onclick="guardarTarea()"><i class="fas fa-save"></i> Guardar Tarea</button>
+          </div>
+          
+          <div class="card-panel panel-eliminar">
+            <h4><i class="fas fa-trash-alt"></i> Gestionar Tareas</h4>
+            <select id="tareasAlumno" size="5" style="width: 100%; margin-bottom: 10px;">
+              <option disabled>Cargando tareas...</option>
+            </select>
+            <button class="btn-danger" onclick="eliminarTareaSeleccionada()"><i class="fas fa-times-circle"></i> Eliminar</button>
+          </div>
+        </div>
+
+
+        <!-- ==================== PANEL DEL PROFESOR (EVALUACIÓN CRUD) ==================== -->
+        <div id="panelProfesor" class="hidden formulario sidebar-form">
+          <div class="card-panel">
+            <h4><i class="fas fa-chalkboard-teacher"></i> Agregar Evaluación</h4>
+
+            <label>Curso:</label>
+            <select id="cursoProfesor">
+              <option value="" disabled selected>Seleccione curso</option>
+            </select>
+
+            <label>Asignatura:</label>
+            <select id="asignaturaProfesor">
+              <option value="" disabled selected>Seleccione asignatura</option>
+            </select>
+
+            <input type="text" id="evaluacion" placeholder="Título de la Evaluación">
+            
+            <label>Fecha y Hora:</label>
+            <input type="date" id="fechaProfesor">
+            <input type="time" id="horaProfesor" value="08:00">
+            
+            <button onclick="guardarPrueba()"><i class="fas fa-calendar-check"></i> Agendar Evaluación</button>
+          </div>
+
+          <div class="card-panel panel-eliminar">
+            <h4><i class="fas fa-trash-alt"></i> Gestionar Evaluaciones</h4>
+            <select id="evaluacionesProfesor" size="5" style="width: 100%; margin-bottom: 10px;">
+              <option disabled>Cargando evaluaciones...</option>
+            </select>
+            <button class="btn-danger" onclick="eliminarEvaluacionSeleccionada()"><i class="fas fa-times-circle"></i> Eliminar</button>
+          </div>
+        </div>
+
+        <!-- ==================== PANEL DEL DIRECTOR ==================== -->
+        <div id="panelDirector" class="hidden formulario sidebar-form">
+          
+          <!-- Configuración del Sistema -->
+          <div class="card-panel">
+            <h4><i class="fas fa-cogs"></i> Configuración del Sistema</h4>
+            <label for="limitePruebas" class="limite-label">
+              <i class="fas fa-calendar-times"></i> Límite de evaluaciones por día:
+            </label>
+            <input type="number" id="limitePruebas" min="1" max="10" value="2">
+            <button onclick="guardarLimitePruebas()"><i class="fas fa-sync-alt"></i> Guardar Límite</button>
+          </div>
+
+          <!-- Selector de Vista CRUD -->
+          <div class="card-panel">
+            <h4><i class="fas fa-users-cog"></i> Gestión de Usuarios</h4>
+            <div class="crud-selector">
+              <button onclick="mostrarCrudDocentes()" id="btnCrudDocentes" class="btn-crud active">
+                <i class="fas fa-chalkboard-teacher"></i> Docentes
+              </button>
+              <button onclick="mostrarCrudEstudiantes()" id="btnCrudEstudiantes" class="btn-crud">
+                <i class="fas fa-user-graduate"></i> Estudiantes
+              </button>
+            </div>
+          </div>
+
+          <!-- CRUD DE DOCENTES -->
+          <div id="crudDocentes" class="card-panel">
+            <h4><i class="fas fa-chalkboard-teacher"></i> Gestión de Docentes</h4>
+            
+            <!-- Formulario Crear/Editar Docente -->
+            <div class="form-section">
+              <h5 id="tituloFormDocente"><i class="fas fa-plus"></i> Agregar Docente</h5>
+              <input type="hidden" id="docenteIdEdit">
+              
+              <label>Nombre:</label>
+              <input type="text" id="docenteNombre" placeholder="Nombre del docente">
+              
+              <label>Apellido Paterno:</label>
+              <input type="text" id="docenteApellidoP" placeholder="Apellido paterno">
+              
+              <label>Apellido Materno:</label>
+              <input type="text" id="docenteApellidoM" placeholder="Apellido materno">
+              
+              <label>Correo Electrónico:</label>
+              <input type="email" id="docenteCorreo" placeholder="correo@ejemplo.com">
+              
+              <label>Contraseña:</label>
+              <input type="password" id="docentePassword" placeholder="Contraseña">
+              
+              <div class="btn-group">
+                <button onclick="guardarDocente()" class="btn-primary">
+                  <i class="fas fa-save"></i> <span id="btnTextDocente">Guardar Docente</span>
+                </button>
+                <button onclick="cancelarEdicionDocente()" id="btnCancelarDocente" class="btn-secondary hidden">
+                  <i class="fas fa-times"></i> Cancelar
+                </button>
+              </div>
+            </div>
+
+            <!-- Lista de Docentes -->
+            <div class="list-section">
+              <h5><i class="fas fa-list"></i> Lista de Docentes</h5>
+              <div id="listaDocentes" class="lista-usuarios">
+                <p class="text-secondary">Cargando docentes...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CRUD DE ESTUDIANTES -->
+          <div id="crudEstudiantes" class="card-panel hidden">
+            <h4><i class="fas fa-user-graduate"></i> Gestión de Estudiantes</h4>
+            
+            <!-- Formulario Crear/Editar Estudiante -->
+            <div class="form-section">
+              <h5 id="tituloFormEstudiante"><i class="fas fa-plus"></i> Agregar Estudiante</h5>
+              <input type="hidden" id="estudianteIdEdit">
+              
+              <label>Nombre:</label>
+              <input type="text" id="estudianteNombre" placeholder="Nombre del estudiante">
+              
+              <label>Apellido Paterno:</label>
+              <input type="text" id="estudianteApellidoP" placeholder="Apellido paterno">
+              
+              <label>Apellido Materno:</label>
+              <input type="text" id="estudianteApellidoM" placeholder="Apellido materno">
+              
+              <label>Correo Electrónico:</label>
+              <input type="email" id="estudianteCorreo" placeholder="correo@ejemplo.com">
+              
+              <label>Contraseña:</label>
+              <input type="password" id="estudiantePassword" placeholder="Contraseña">
+              
+              <label>Curso:</label>
+              <select id="estudianteCurso">
+                <option value="" disabled selected>Seleccione curso</option>
+              </select>
+              
+              <label>Año Escolar:</label>
+              <input type="number" id="estudianteAnio" value="2025" min="2024" max="2030">
+              
+              <div class="btn-group">
+                <button onclick="guardarEstudiante()" class="btn-primary">
+                  <i class="fas fa-save"></i> <span id="btnTextEstudiante">Guardar Estudiante</span>
+                </button>
+                <button onclick="cancelarEdicionEstudiante()" id="btnCancelarEstudiante" class="btn-secondary hidden">
+                  <i class="fas fa-times"></i> Cancelar
+                </button>
+              </div>
+            </div>
+
+            <!-- Lista de Estudiantes -->
+            <div class="list-section">
+              <h5><i class="fas fa-list"></i> Lista de Estudiantes</h5>
+              <div id="listaEstudiantes" class="lista-usuarios">
+                <p class="text-secondary">Cargando estudiantes...</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </aside>
+
+    <!-- -------------------- CONTENIDO PRINCIPAL (CALENDARIO) -------------------- -->
+    <main class="main-content">
+
+      <!-- Selector de Vista -->
+      <div id="selectorVista" class="selector-vista-main">
+        <button onclick="cambiarVista('semana')" id="btnSemana" class="btn-view active">
+          <i class="fas fa-calendar-week"></i> Semana
+        </button>
+        <button onclick="cambiarVista('mes')" id="btnMes" class="btn-view">
+          <i class="fas fa-calendar"></i> Mes
+        </button>
+        <button onclick="cambiarVista('anio')" id="btnAnio" class="btn-view">
+          <i class="fas fa-th-large"></i> Año
+        </button>
+      </div>
+
+      <!-- Barra de Navegación de Calendario -->
+      <div id="calendarNavBar" class="calendar-nav-bar">
+        <button class="nav-btn" onclick="navegarSemana(-1)">
+          <i class="fas fa-arrow-left"></i> Semana Anterior
+        </button>
+        <span id="rangoFechas" class="rango-fechas">Cargando...</span>
+        <button class="nav-btn" onclick="navegarSemana(1)">
+          Semana Siguiente <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+      
+      <!-- Contenedor para vistas Mes/Año -->
+      <div id="contenedorVistas"></div>
+
+      <!-- Calendario Semanal -->
+      <div class="calendario" id="calendario">
+        <!-- El calendario semanal se inyecta aquí -->
+      </div>
+      
+    </main>
+
+  </div>
+
+  <!-- Indicador de carga -->
+  <div id="loadingIndicator" class="loading-indicator hidden">
+    <i class="fas fa-spinner fa-spin"></i> Cargando...
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,843 @@
+/* ------------------------------------------ */
+/* GLOBAL RESETS Y TIPOGRAFÍA */
+/* ------------------------------------------ */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f7f6; /* Fondo de la aplicación más suave */
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 2.2em;
+  color: #1976d2; /* Azul principal */
+  margin-bottom: 20px;
+}
+
+h4 {
+  color: #1976d2;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  border-bottom: 2px solid #bbdefb;
+  padding-bottom: 5px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ------------------------------------------ */
+/* LOGIN SECTION (Adaptado al estilo PPTX) */
+/* ------------------------------------------ */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white; /* Fondo blanco para el contenedor de login */
+  padding: 50px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 15vh auto 0;
+}
+
+.login-formulario {
+  flex: 1;
+  padding-right: 30px;
+}
+
+.login-formulario input,
+.login-formulario button {
+  width: 90%;
+}
+
+.login-formulario input {
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #cfd8dc;
+  border-radius: 6px;
+  background: #fcfcfc;
+}
+
+.login-formulario button {
+  padding: 12px 20px;
+  margin-top: 15px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.login-formulario button:hover {
+  background: #1565c0;
+}
+
+.imagen-derecha {
+  width: 160px;
+  height: auto;
+  border-radius: 8px;
+  opacity: 1;
+}
+
+/* ------------------------------------------ */
+/* APP LAYOUT (SIDEBAR + MAIN) */
+/* ------------------------------------------ */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 320px; /* Ancho fijo para la barra lateral */
+  background-color: #fff;
+  padding: 25px 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 30px;
+  background: #e3f2fd; /* Azul claro de fondo (propuesta PPTX) */
+}
+
+/* Logo y Saludo */
+.logo-sidebar img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  display: block;
+}
+
+.saludo-personalizado {
+    color: #1976d2;
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.btn-sidebar-logout {
+  background: #ff5722 !important; /* Naranja/Rojo para cerrar sesión */
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  transition: background-color 0.3s;
+}
+.btn-sidebar-logout:hover {
+    background: #e64a19 !important;
+}
+
+/* Estilo general de los paneles CRUD (cards) */
+.card-panel {
+  background: #f8fbff; /* Blanco-azul muy claro para los paneles */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  border: 1px solid #bbdefb; /* Borde azul claro */
+}
+.card-panel h4 {
+    margin-top: 0;
+}
+
+.sidebar-form input,
+.sidebar-form select {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #bbdefb;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.sidebar-form button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.sidebar-form button:not(.btn-danger) {
+  background: #4caf50; /* Verde para acción de guardar/agregar */
+  color: white;
+}
+.sidebar-form button:not(.btn-danger):hover {
+    background: #388e3c;
+}
+
+.sidebar-form .btn-danger {
+  background: #ef5350; /* Rojo para acción de eliminar */
+  color: white;
+}
+.sidebar-form .btn-danger:hover {
+    background: #d32f2f;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.input-group select {
+  flex: 1;
+}
+.asignatura-info {
+    font-size: 1em;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 15px;
+}
+.asignatura-info span {
+    color: #1976d2;
+    font-weight: bold;
+}
+.limite-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.panel-eliminar {
+    border-color: #ffccbc; /* Borde de eliminación más suave */
+}
+
+/* ------------------------------------------ */
+/* SELECTOR DE VISTAS PRINCIPAL (NUEVO) */
+/* ------------------------------------------ */
+.selector-vista-main {
+    display: flex;
+    justify-content: flex-end; /* Mueve los botones a la derecha */
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.selector-vista-main .btn-view {
+    background: #e0e0e0;
+    color: #444;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.selector-vista-main .btn-view.active,
+.selector-vista-main .btn-view:hover {
+    background: #1976d2;
+    color: white;
+}
+
+/* ------------------------------------------ */
+/* CALENDAR NAV BAR (Implementación del PPTX) */
+/* ------------------------------------------ */
+.calendar-nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.calendar-nav-bar .nav-btn {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+.calendar-nav-bar .nav-btn:hover {
+    background: #1565c0;
+}
+
+.rango-fechas {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #444;
+}
+
+
+/* ------------------------------------------ */
+/* CALENDARIO SEMANAL Y VISTAS */
+/* ------------------------------------------ */
+.calendario {
+  display: grid;
+  grid-template-columns: 120px repeat(5, 1fr);
+  grid-auto-rows: minmax(70px, auto); /* Ajuste para que el contenido quepa */
+  gap: 1px;
+  background: #e0e0e0; /* Gris muy claro para la división */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.celda {
+  padding: 8px;
+  text-align: center;
+  background: #fff;
+  color: #333;
+  font-size: 0.9em;
+  border-left: 1px solid #f4f7f6;
+  border-bottom: 1px solid #f4f7f6;
+}
+.celda:nth-child(6n + 1) { /* Primera columna (Hora) */
+    background: #f0f4c3; /* Fondo diferente para la hora */
+    font-weight: bold;
+    color: #555;
+    border-right: 1px solid #e0e0e0;
+}
+
+.header {
+  background: #bbdefb; /* Azul claro para encabezados (PPTX) */
+  font-weight: bold;
+  color: #1976d2;
+  font-size: 1em;
+}
+
+/* Estilos de Eventos */
+.prueba {
+    background-color: #ffccbc !important; /* Rojo suave para evaluaciones */
+    border-left: 5px solid #ff5722;
+    font-weight: 500;
+    color: #444;
+}
+.tarea {
+    background-color: #c8e6c9 !important; /* Verde suave para tareas personales */
+    border-left: 5px solid #4caf50;
+    font-weight: 500;
+    color: #444;
+}
+.evento-tipo {
+    font-weight: bold;
+    font-size: 0.8em;
+    color: #1976d2;
+}
+
+/* Vistas Mensual/Anual */
+.calendario-anual {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 10px;
+}
+
+.mes-mini {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+.mes-mini:hover {
+    background: #e3f2fd;
+}
+
+.nav-mes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.nav-mes h2 {
+    margin: 0;
+    font-size: 1.8em;
+}
+.nav-mes button {
+    background: #1976d2;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.calendario-mensual {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+.calendario-mensual .celda {
+    min-height: 80px;
+    border: 1px solid #eee;
+    padding: 10px;
+}
+.calendario-mensual .header {
+    background: #bbdefb;
+}
+.badge {
+    display: inline-block;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.7em;
+    font-weight: bold;
+    color: white;
+    margin-left: 5px;
+}
+.badge.prueba {
+    background: #ff5722;
+}
+.badge.tarea {
+    background: #4caf50;
+}
+
+/* Agregar estos estilos a tu archivo styles.css existente */
+
+/* ==================== INDICADOR DE CARGA ==================== */
+.loading-indicator {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px 40px;
+  border-radius: 10px;
+  z-index: 9999;
+  font-size: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.loading-indicator i {
+  margin-right: 10px;
+  font-size: 24px;
+}
+
+/* ==================== MENSAJE DE ERROR ==================== */
+.mensaje-error {
+  background-color: #f44336;
+  color: white;
+  padding: 12px 20px;
+  margin-top: 15px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 14px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==================== MEJORAS EN INPUTS ==================== */
+input[type="date"],
+input[type="time"] {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+input[type="date"]:focus,
+input[type="time"]:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+}
+
+/* ==================== MEJORAS EN SELECT MÚLTIPLE ==================== */
+select[size] {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  min-height: 150px;
+}
+
+select[size] option {
+  padding: 8px;
+  margin: 2px 0;
+  border-radius: 3px;
+}
+
+select[size] option:hover {
+  background-color: #e3f2fd;
+}
+
+select[size] option:checked {
+  background-color: #4a90e2;
+  color: white;
+}
+
+/* ==================== BADGES EN VISTA MENSUAL ==================== */
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: 5px;
+}
+
+.badge.prueba {
+  background-color: #ff5722;
+  color: white;
+}
+
+.badge.tarea {
+  background-color: #4caf50;
+  color: white;
+}
+
+.evento-detalle {
+  font-size: 11px;
+  margin: 3px 0;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.celda.con-eventos {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: bold;
+}
+
+/* ==================== CLASE HIDDEN ==================== */
+.hidden {
+  display: none !important;
+}
+
+/* ==================== BOTONES ACTIVOS ==================== */
+.btn-view.active {
+  background-color: #4a90e2;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+}
+
+/* ==================== MEJORAS EN PANEL LATERAL ==================== */
+.card-panel label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+}
+
+.card-panel input[type="text"],
+.card-panel input[type="number"],
+.card-panel select:not([size]) {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.card-panel button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* ==================== MENSAJES INFORMATIVOS ==================== */
+.text-secondary {
+  color: #666;
+  font-size: 13px;
+  font-style: italic;
+  margin-top: 10px;
+  padding: 10px;
+  background: #f5f5f5;
+  border-radius: 5px;
+  border-left: 3px solid #999;
+}
+
+/* ==================== RESPONSIVIDAD MEJORADA ==================== */
+@media (max-width: 768px) {
+  .loading-indicator {
+    padding: 15px 30px;
+    font-size: 16px;
+  }
+
+  input[type="date"],
+  input[type="time"] {
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+}
+
+/* ==================== PANEL DIRECTOR - CRUD ==================== */
+
+/* Selector de tipo de CRUD */
+.crud-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.btn-crud {
+  flex: 1;
+  padding: 12px 15px;
+  background: #e0e0e0;
+  color: #444;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-crud.active,
+.btn-crud:hover {
+  background: #1976d2;
+  color: white;
+}
+
+/* Secciones del formulario */
+.form-section {
+  background: #f0f7ff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #bbdefb;
+}
+
+.form-section h5 {
+  color: #1976d2;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  border-bottom: 2px solid #bbdefb;
+  padding-bottom: 8px;
+}
+
+.form-section label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9em;
+}
+
+.form-section input,
+.form-section select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #bbdefb;
+  border-radius: 5px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Grupo de botones */
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-primary {
+  flex: 1;
+  padding: 12px 20px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background: #388e3c;
+}
+
+.btn-secondary {
+  flex: 1;
+  padding: 12px 20px;
+  background: #757575;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #616161;
+}
+
+/* Sección de listas */
+.list-section {
+  margin-top: 20px;
+}
+
+.list-section h5 {
+  color: #1976d2;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  border-bottom: 2px solid #bbdefb;
+  padding-bottom: 8px;
+}
+
+.lista-usuarios {
+  max-height: 400px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+/* Card de usuario individual */
+.usuario-card {
+  background: #f8fbff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border-left: 4px solid #1976d2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.usuario-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.usuario-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.usuario-nombre {
+  font-weight: bold;
+  color: #1976d2;
+  font-size: 1.1em;
+}
+
+.usuario-info {
+  font-size: 0.9em;
+  color: #666;
+  margin: 5px 0;
+}
+
+.usuario-info i {
+  color: #1976d2;
+  margin-right: 5px;
+  width: 16px;
+}
+
+.usuario-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn-edit {
+  flex: 1;
+  padding: 8px 12px;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.btn-edit:hover {
+  background: #1976d2;
+}
+
+.btn-delete {
+  flex: 1;
+  padding: 8px 12px;
+  background: #ef5350;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.btn-delete:hover {
+  background: #d32f2f;
+}
+
+/* Mensaje cuando no hay datos */
+.no-data {
+  text-align: center;
+  color: #999;
+  padding: 30px;
+  font-style: italic;
+}
+
+/* Badge de curso para estudiantes */
+.badge-curso {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #4caf50;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .usuario-actions {
+    flex-direction: column;
+  }
+}
